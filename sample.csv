@@ -1,0 +1,9 @@
+customer_id,age,salary,email,country
+1,34,45000,john@email.com,UK
+2,29,32000,,France
+3,150,99000,sarah@email.com,UK
+4,41,,mike@email.com,Germany
+5,38,61000,anna@email.com,France
+6,27,29000,tom@email.com,UK
+7,33,52000,,UK
+8,999,41000,lisa@email.com,France
