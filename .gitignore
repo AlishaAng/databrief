@@ -28,6 +28,7 @@ MANIFEST
 
 # Python
 __pycache__/
+.streamlit/
 *.pyc
 .venv/
 *.egg-info/
