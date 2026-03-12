@@ -35,8 +35,9 @@ cd databrief
 ### 2. Install Python dependencies
 ```bash
 cd backend
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
-cd ..
 ```
 
 ### 3. Install frontend dependencies

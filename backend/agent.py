@@ -20,29 +20,57 @@ Write a clear, plain-English report that:
 Use simple language. Write in paragraphs. Avoid statistical jargon.
 """
 
-
 def build_ds_prompt(profile):
+    backtick = "```"
     return f"""
-You are a senior data scientist reviewing a dataset for quality issues.
+You are a senior data scientist conducting a thorough data quality audit.
 
 Dataset: "{profile['filename']}"
 Rows: {profile['total_rows']} | Columns: {profile['total_columns']}
-{'Note: this is a sample of a larger file.' if profile['was_sampled'] else ''}
+{'Note: this is a sample of a larger file.' if profile.get('was_sampled') else ''}
 
 Column statistics:
 {json.dumps(profile['columns'], indent=2)}
 
-Provide a detailed technical data quality report that:
-1. Identifies every data quality issue per column (nulls, outliers, skew,
-   cardinality issues, suspicious value ranges, type mismatches)
-2. Explains why each issue matters for downstream modelling or analysis
-3. Suggests a concrete fix for each issue with working pandas code
-4. Gives an overall data quality score out of 10 with justification
+Produce a structured technical data quality report using EXACTLY this format.
+Do not add any extra text, asterisks, or markdown outside of what is shown below.
+Each section must be separated by a line containing only three dashes: ---
 
-Format each issue as:
-- ISSUE: what is wrong
-- IMPACT: why it matters
-- FIX: pandas code to resolve it
+---
+## Data Quality Score: [X/10]
+[One sentence justifying the score]
+
+---
+## Column Analysis
+
+For EACH column use EXACTLY this block format with no variations:
+
+### [column name] ([data type])
+STATUS: [PASS or WARNING or CRITICAL]
+ISSUES: [One paragraph describing every issue. If none write: No issues detected.]
+IMPACT: [One paragraph explaining why this matters for modelling or analysis.]
+FIX:
+{backtick}{backtick}{backtick}python
+# paste working pandas code here
+# if no fix needed write: # No fix required
+{backtick}{backtick}{backtick}
+
+---
+## Top 3 Priority Fixes
+1. [First most important fix and why]
+2. [Second most important fix and why]
+3. [Third most important fix and why]
+
+---
+## Overall Assessment
+[2-3 sentences summarising the dataset's readiness for analysis or modelling]
+
+STRICT RULES:
+- Do NOT use double asterisks ** anywhere in your response
+- Do NOT put the code inline with text — always put it in a python code block on its own line
+- Do NOT skip any columns
+- Do NOT add extra sections
+- Reference exact column names and numbers from the statistics
 """
 
 
@@ -59,7 +87,7 @@ def explain_data(filepath, mode="summary"):
         messages=[
             {
                 "role": "system",
-                "content": "You are a precise, concise data analyst. Always structure your reports clearly. Never make up data that wasn't provided."
+                "content": "You are a precise, concise data analyst/scientist. Always structure your reports clearly. Never make up data that wasn't provided."
             },
             {
                 "role": "user",
